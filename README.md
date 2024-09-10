@@ -1,3 +1,3 @@
 # MCS
 Microcontroler system
-init
+STM32_Cube_IDE
