@@ -32,7 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define SECOND_TIMEOUT 1000
+#define STEP_TIMEOUT 100
+#define SECONDS(time) (1000 * time)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,7 +45,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint32_t timeout = 0;
+uint32_t step_timeout = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,7 +68,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+    uint32_t i = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,13 +90,30 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+    HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//      HAL_Delay(SECOND_TIMEOUT);
+//      HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_SET);
+//      HAL_Delay(SECOND_TIMEOUT);
+//      HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
+      
+      /* Togle greeen led */
+      if (timeout <= SECOND_TIMEOUT)
+      {
+          timeout += STEP_TIMEOUT;
+      }
+      else
+      {
+          timeout = 0;
+      }
+      HAL_Delay(timeout);
+      HAL_GPIO_TogglePin(LED_Green_GPIO_Port, LED_Green_Pin);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
