@@ -1,2 +1,3 @@
 # MCS
 Microcontroler system
+init
