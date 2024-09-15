@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -43,18 +44,45 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t Direction_Handler = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void Circular_Flick (uint8_t Direction, uint32_t Delay_ms);
+void Red_Tog(); 	//Start on top - going clockwise
+void Blue_Tog();
+void Green_Tog();
+void Orange_Tog();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void Red_Tog(){ HAL_GPIO_TogglePin(LED_Red_GPIO_Port, LED_Red_Pin);}
+void Blue_Tog(){ HAL_GPIO_TogglePin(LED_Blue_GPIO_Port, LED_Blue_Pin);}
+void Green_Tog(){ HAL_GPIO_TogglePin(LED_Green_GPIO_Port, LED_Green_Pin);}
+void Orange_Tog(){ HAL_GPIO_TogglePin(LED_Orange_GPIO_Port, LED_Orange_Pin);}
+void (*LED_Tog[])(void) = {Red_Tog, Blue_Tog, Green_Tog, Orange_Tog};
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	static uint8_t Pointer = 0;
+	if (htim->Instance == TIM14){
+		LED_Tog[Pointer]();
+		if (Direction_Handler != 0){
+      Pointer = (Pointer >= 3) ? 0 : Pointer + 1;
+    } else { 
+      Pointer = (Pointer == 0) ? 3 : Pointer - 1;
+		}
+		LED_Tog[Pointer]();
+	}
+}
+
+void Circular_Flick (uint8_t Direction, uint32_t Delay_ms){
+	Direction_Handler = Direction;
+	TIM14->ARR = Delay_ms;
+	HAL_TIM_Base_Start_IT(&htim14);
+}
 /* USER CODE END 0 */
 
 /**
@@ -86,15 +114,20 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
 
+	HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	Circular_Flick (0, 200);
   while (1)
   {
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
