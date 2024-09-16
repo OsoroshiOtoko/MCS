@@ -33,8 +33,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define Clockwise 0
-#define Counterclockwise 1
+#define Clockwise 1
+#define Counterclockwise 0
+#define Number_Of_LEDs 4-1
+#define Step 1
+#define Delay_Limit_ms 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,13 +49,14 @@
 
 /* USER CODE BEGIN PV */
 uint8_t Direction_Handler = 0;
+uint8_t Timer_Interrupt_Flag = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void Circular_Flick (uint8_t Direction, uint32_t Delay_ms);
-void Red_Tog(); 	//Start on top - going clockwise
+void Red_Tog(); 	//Start on top - going counterclockwise 
 void Blue_Tog();
 void Green_Tog();
 void Orange_Tog();
@@ -71,20 +75,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		static uint8_t Pointer = 0;
 		LED_Tog[Pointer]();
 		if (Direction_Handler == 0){
-      Pointer = (Pointer >= 3) ? 0 : Pointer + 1;
+      Pointer = (Pointer >= Number_Of_LEDs) ? 0 : Pointer + Step;
     } else { 
-      Pointer = (Pointer == 0) ? 3 : Pointer - 1;
+      Pointer = (Pointer == 0) ? Number_Of_LEDs : Pointer - Step;
 		}
 		LED_Tog[Pointer]();
 	}
 }
 
 void Circular_Flick (uint8_t Direction, uint32_t Delay_ms){
-	HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
+	HAL_TIM_Base_Stop_IT(&htim14);
 	Direction_Handler = Direction;
+	if (Delay_ms < Delay_Limit_ms){ Delay_ms = Delay_Limit_ms;}
 	TIM14->ARR = Delay_ms;
 	HAL_TIM_Base_Start_IT(&htim14);
 }
@@ -121,14 +123,33 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
-
+	HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	Circular_Flick (Clockwise, 500);
+
   while (1)
   {
+	Circular_Flick (Clockwise, 500);
+	HAL_Delay(4010); //if delay is round - MC stucks for a minute
+	Circular_Flick (Counterclockwise, 250);
+	HAL_Delay(2010);
+		
+	//////////////Comment///////////////////////////
+		/* 
+		This is only core for such task. In real project several functions needed, such as:
+		Circular_Flick_Init();
+		Circular_Flick_Start();
+		Circular_Flick_Stop();
+		Core will remain same - functions will setup LEDs, Pointer and Duration
+		If needed - duration of pause between flicks also can be specified
+		*/
+	//////////////Comment///////////////////////////
+		
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
