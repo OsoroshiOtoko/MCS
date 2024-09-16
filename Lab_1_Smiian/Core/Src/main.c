@@ -33,7 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define Clockwise 0
+#define Counterclockwise 1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,10 +67,10 @@ void Orange_Tog(){ HAL_GPIO_TogglePin(LED_Orange_GPIO_Port, LED_Orange_Pin);}
 void (*LED_Tog[])(void) = {Red_Tog, Blue_Tog, Green_Tog, Orange_Tog};
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	static uint8_t Pointer = 0;
 	if (htim->Instance == TIM14){
+		static uint8_t Pointer = 0;
 		LED_Tog[Pointer]();
-		if (Direction_Handler != 0){
+		if (Direction_Handler == 0){
       Pointer = (Pointer >= 3) ? 0 : Pointer + 1;
     } else { 
       Pointer = (Pointer == 0) ? 3 : Pointer - 1;
@@ -79,6 +80,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void Circular_Flick (uint8_t Direction, uint32_t Delay_ms){
+	HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
 	Direction_Handler = Direction;
 	TIM14->ARR = Delay_ms;
 	HAL_TIM_Base_Start_IT(&htim14);
@@ -117,15 +122,11 @@ int main(void)
   MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
 
-	HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	Circular_Flick (0, 200);
+	Circular_Flick (Clockwise, 500);
   while (1)
   {
     /* USER CODE END WHILE */
