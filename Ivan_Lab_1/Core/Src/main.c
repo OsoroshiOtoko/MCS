@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -31,7 +32,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+	#define MINUT_TIMEOUT 1000 * 60
+	#define SECOND_TIMEOUT 1000
+	#define MSECOND_TIMEOUT 1
+	#define STEP_TIMEOUT 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,7 +46,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint32_t timeout = 0;
+uint32_t step_timeout = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,14 +89,68 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+	  
+//	  HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
+		
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		/*HW_Osnovnoi variant*/
+		HAL_Delay(SECOND_TIMEOUT);
+		HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+		HAL_Delay(SECOND_TIMEOUT);
+		HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_RESET);
+		HAL_Delay(SECOND_TIMEOUT);
+		HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
+		HAL_Delay(SECOND_TIMEOUT);
+		HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
+		
+		/*HW_Variant_2*/
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_TogglePin (LED_Orange_GPIO_Port, LED_Orange_Pin);
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_TogglePin (LED_Green_GPIO_Port, LED_Green_Pin);
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_TogglePin (LED_Blue_GPIO_Port, LED_Blue_Pin);
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_TogglePin (LED_Red_GPIO_Port, LED_Red_Pin);	
+		
+		/*HW_Variant_3*/
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_RESET);
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(LED_Orange_GPIO_Port, LED_Orange_Pin, GPIO_PIN_RESET);
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(LED_Green_GPIO_Port, LED_Green_Pin, GPIO_PIN_RESET);
+//		HAL_Delay(SECOND_TIMEOUT);
+//		HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+
+		/*Para*/
+//			if (timeout <= SECOND_TIMEOUT)
+//			{
+//					timeout += step_timeout;
+//			}
+//			else
+//			{
+//					timeout = 0;
+//			}
+//			HAL_Delay(timeout);
+//			HAL_GPIO_TogglePin (LED_Green_GPIO_Port, LED_Green_Pin);
+			
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
