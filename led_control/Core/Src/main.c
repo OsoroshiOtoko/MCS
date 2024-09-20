@@ -33,6 +33,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define second 1000
+#define NUM_LEDS (sizeof(LEDs) / sizeof(LED_TypeDef))
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,7 +44,14 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+	   LED_TypeDef LEDs[] = {
+    {LED_Blue_GPIO_Port, LED_Blue_Pin},
+    {LED_Red_GPIO_Port, LED_Red_Pin},
+    {LED_Orange_GPIO_Port, LED_Orange_Pin},
+    {LED_Green_GPIO_Port, LED_Green_Pin}
+    };
+		 
+			uint8_t current_led = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -54,18 +62,42 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void TurnOffAllLEDs(void) {
+    for (uint8_t i = 0; i < NUM_LEDS; i++) {
+        HAL_GPIO_WritePin(LEDs[i].Port, LEDs[i].Pin, GPIO_PIN_RESET);
+    }
+}
 
+
+void Next_LED(void) {
+   
+    TurnOffAllLEDs();
+    
+   
+    HAL_GPIO_WritePin(LEDs[current_led].Port, LEDs[current_led].Pin, GPIO_PIN_SET);
+    
+ 
+    current_led++;
+
+  
+    if (current_led >= NUM_LEDS) {
+        current_led = 0;
+    }
+}
 /* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
   * @retval int
   */
+	
+	
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
    GPIO_PinState pin_state = GPIO_PIN_RESET;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -95,16 +127,17 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    pin_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
-		if(pin_state == GPIO_PIN_SET)
+		
+      pin_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
+   		if(pin_state == GPIO_PIN_SET)
 		{
-			HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+			//HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+		  Next_LED();
 		}
 		else
 		{
-			HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+			TurnOffAllLEDs();
 		}
-		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

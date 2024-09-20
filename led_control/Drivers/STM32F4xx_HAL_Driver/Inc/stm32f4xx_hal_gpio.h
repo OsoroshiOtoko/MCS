@@ -246,6 +246,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
   * @}
   */ 
 /* Private types -------------------------------------------------------------*/
+typedef struct {
+    GPIO_TypeDef* Port;
+    uint16_t Pin;
+} LED_TypeDef;
+
 /* Private variables ---------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 /** @defgroup GPIO_Private_Constants GPIO Private Constants
