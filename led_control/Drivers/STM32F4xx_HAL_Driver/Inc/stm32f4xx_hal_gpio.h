@@ -246,6 +246,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
   * @}
   */ 
 /* Private types -------------------------------------------------------------*/
+// Define a structure to store the LED port and pin
 typedef struct {
     GPIO_TypeDef* Port;
     uint16_t Pin;
