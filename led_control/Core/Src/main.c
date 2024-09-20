@@ -65,7 +65,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+   GPIO_PinState pin_state = GPIO_PIN_RESET;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -95,7 +95,16 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    pin_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
+		if(pin_state == GPIO_PIN_SET)
+		{
+			HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+		}
+		else
+		{
+			HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_RESET);
+		}
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
