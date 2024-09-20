@@ -128,16 +128,29 @@ int main(void)
   {
     /* USER CODE END WHILE */
 		
-      pin_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
-   		if(pin_state == GPIO_PIN_SET)
-		{
-			//HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
-		  Next_LED();
-		}
-		else
-		{
-			TurnOffAllLEDs();
-		}
+//      pin_state = HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin);
+//   		if(pin_state == GPIO_PIN_SET)
+//		{
+//			//HAL_GPIO_WritePin(LED_Blue_GPIO_Port, LED_Blue_Pin, GPIO_PIN_SET);
+//		  Next_LED();
+//		}
+//		else
+//		{
+//			TurnOffAllLEDs();
+//		}
+		
+		if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {  
+        HAL_Delay(50);  
+        if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {  
+            Next_LED();  
+            
+            while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {
+                
+            }
+        }
+    }
+		
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
