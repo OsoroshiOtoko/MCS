@@ -22,12 +22,16 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "leds.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef enum
+{
+	FORWARD = 0,
+	REVERSE = 1
+}direction_e_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -43,13 +47,18 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+static bool flag_set_button = false;
 
+static uint32_t timeout = 300;
+static direction_e_t diraction = FORWARD;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void LED_Blink(leds_color_e_t color, uint32_t timeout);
+void LED_Circle_Blink(direction_e_t direction, uint32_t timeout);
+//void LED_Diraction_Switch();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -74,7 +83,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  leds_init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -95,7 +104,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  LED_Circle_Blink(direction, timeout);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -143,7 +152,33 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void LED_Blink(leds_color_e_t color, uint32_t timeout)
+{
+	leds_set(color, ON);
+	HAL_Delay(timeout);
+	leds_set(color, OFF);
+	HAL_Delay(timeout);
+}
 
+void LED_Circle_Blink(direction_e_t direction, uint32_t timeout)
+{
+	switch (direction)
+	{
+	    case FORWARD:
+	    	LED_Blink(GREEN, timeout);
+	    	LED_Blink(ORANGE, timeout);
+	    	LED_Blink(RED, timeout);
+	    	LED_Blink(BLUE, timeout);
+	    	break;
+
+	    case REVERSE:
+	    	LED_Blink(BLUE, timeout);
+	    	LED_Blink(RED, timeout);
+	    	LED_Blink(ORANGE, timeout);
+	    	LED_Blink(GREEN, timeout);
+	    	break;
+	}
+}
 /* USER CODE END 4 */
 
 /**
