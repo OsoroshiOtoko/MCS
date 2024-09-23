@@ -19,7 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
-
+#include <stdbool.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -54,7 +54,7 @@ typedef enum
 
 static GPIO_PinState pin_state = GPIO_PIN_RESET;
 
-//static bool flag_set_button = false;
+static bool flag_set_button = false;
 
 static leds_color_e_t led_switcher = GREEN;
 static direction_e_t direction = FORWARD;
@@ -156,7 +156,11 @@ int main(void)
 		
 
 		HAL_Delay(timeout);
-		
+		if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET)
+		{
+			if(flag_set_button == false)
+			{
+			flag_set_button = true;
 		HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_RESET); 
     if(direction == FORWARD)
 		{			
@@ -176,6 +180,12 @@ int main(void)
 		led_switcher --;
 		}
 		HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET); 
+	}
+}
+		else
+		{
+			flag_set_button = false;
+		}
 		
 		
 		
