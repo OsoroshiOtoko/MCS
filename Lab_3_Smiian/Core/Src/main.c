@@ -52,8 +52,6 @@ led_color_e_t current_led = RED;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void Main_Init(void);
-void Circle (direction_e_t direction, led_color_e_t start_point);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -62,6 +60,7 @@ void Circle (direction_e_t direction, led_color_e_t start_point);
 /* USER CODE BEGIN 0 */
 void Main_Init(void)
 {
+    led_init();
     led_set(ALL, OFF);
 }
 
@@ -91,6 +90,7 @@ void Circle (direction_e_t direction, led_color_e_t start_point)
         default:
            break;
     }
+    led_set (current_led, ON);
 }
 /* USER CODE END 0 */
 
@@ -122,6 +122,7 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+
   /* USER CODE BEGIN 2 */
   Main_Init();
   /* USER CODE END 2 */
@@ -132,13 +133,13 @@ int main(void)
   {
     for(uint8_t i=0; i<=8; i++)
     {
-        Circle (FORWARD, RED);
-        HAL_Delay(500);
+        Circle (FORWARD, current_led);
+        HAL_Delay(1000);
     }
     for(uint8_t i=0; i<=8; i++)
     {
         Circle (REVERSE, current_led);
-        HAL_Delay(100);
+        HAL_Delay(300);
     }
     /* USER CODE END WHILE */
 

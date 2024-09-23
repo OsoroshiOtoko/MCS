@@ -1,7 +1,10 @@
 #include "led.h"
 #include "gpio.h"
 
-void led_init(void);
+void led_init(void)
+{
+    MX_GPIO_Init();
+}
 
 void led_set(led_color_e_t color, led_state_e_t state)
 {
