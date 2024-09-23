@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,7 +32,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+typedef enum
+{
+    REVERSE = 0,
+    FORWARD = 1
+}direction_e_t;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,7 +47,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+led_color_e_t current_led = RED;
+direction_e_t direction = FORWARD;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,7 +92,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  led_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -143,7 +148,37 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == TOG_INT_Pin)
+    {
+        led_set (current_led, OFF);
+        switch (direction)
+        {
+            case FORWARD:
+            {
+                current_led++;
+                if (current_led == ALL)
+                {
+                    current_led = RED;
+                }
+                break;
+            }
+            case REVERSE:
+            {
+                if (current_led == RED)
+                {
+                    current_led = ALL;
+                }
+                current_led--;
+                break;
+            }
+            default:
+               break;
+        }
+        led_set (current_led, ON);
+    }
+}
 /* USER CODE END 4 */
 
 /**

@@ -60,6 +60,8 @@ void Error_Handler(void);
 #define TOG_INT_Pin GPIO_PIN_0
 #define TOG_INT_GPIO_Port GPIOA
 #define TOG_INT_EXTI_IRQn EXTI0_IRQn
+#define HAND_Pin GPIO_PIN_1
+#define HAND_GPIO_Port GPIOA
 #define LED_Green_Pin GPIO_PIN_12
 #define LED_Green_GPIO_Port GPIOD
 #define LED_Orange_Pin GPIO_PIN_13
