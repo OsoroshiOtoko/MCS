@@ -28,12 +28,19 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+typedef enum
+{
+	FORWARD = 0,
+	REVERSE = 1,
+}direction_e_t;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define second 1000
-#define NUM_LEDS (sizeof(LEDs) / sizeof(LED_TypeDef)) // Array size
+#define LED_GPIO_Port LED_Green_GPIO_Port //same port
+//#define NUM_LEDS (sizeof(LEDs) / sizeof(LED_TypeDef)) // Array size
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,15 +52,25 @@
 
 /* USER CODE BEGIN PV */
 
+static GPIO_PinState pin_state = GPIO_PIN_RESET;
+
+//static bool flag_set_button = false;
+
+static leds_color_e_t led_switcher = GREEN;
+static direction_e_t direction = FORWARD;
+static uint32_t timeout = 0;
+static uint16_t leds[ALL] = {LED_Green_Pin, LED_Orange_Pin, LED_Red_Pin, LED_Blue_Pin};
+
+
 // Initialization of the array with LEDs
-	   LED_TypeDef LEDs[] = {
-    {LED_Blue_GPIO_Port, LED_Blue_Pin},
-    {LED_Red_GPIO_Port, LED_Red_Pin},
-    {LED_Orange_GPIO_Port, LED_Orange_Pin},
-    {LED_Green_GPIO_Port, LED_Green_Pin}
-    };
-		 
-		uint8_t current_led = 0; // Variable for tracking the current LED
+//	   LED_TypeDef LEDs[] = {
+//    {LED_Blue_GPIO_Port, LED_Blue_Pin},
+//    {LED_Red_GPIO_Port, LED_Red_Pin},
+//    {LED_Orange_GPIO_Port, LED_Orange_Pin},
+//    {LED_Green_GPIO_Port, LED_Green_Pin}
+//    };
+//		 
+//		uint8_t current_led = 0; // Variable for tracking the current LED
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,29 +83,29 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 		
 // Function to turn off all LEDs		
-void TurnOffAllLEDs(void) {
-    for (uint8_t i = 0; i < NUM_LEDS; i++) {
-        HAL_GPIO_WritePin(LEDs[i].Port, LEDs[i].Pin, GPIO_PIN_RESET);
-    }
-}
+//void TurnOffAllLEDs(void) {
+//    for (uint8_t i = 0; i < NUM_LEDS; i++) {
+//        HAL_GPIO_WritePin(LEDs[i].Port, LEDs[i].Pin, GPIO_PIN_RESET);
+//    }
+//}
 
 
-// Function for switching to the next LED
-void Next_LED(void) {
-    // Turn off all LEDs
-    TurnOffAllLEDs();
-    
-    // Turn on the next LED
-    HAL_GPIO_WritePin(LEDs[current_led].Port, LEDs[current_led].Pin, GPIO_PIN_SET);
-    
-    // Increase the counter
-    current_led++;
+//// Function for switching to the next LED
+//void Next_LED(void) {
+//    // Turn off all LEDs
+//    TurnOffAllLEDs();
+//    
+//    // Turn on the next LED
+//    HAL_GPIO_WritePin(LEDs[current_led].Port, LEDs[current_led].Pin, GPIO_PIN_SET);
+//    
+//    // Increase the counter
+//    current_led++;
 
-    // If the counter has reached the end of the array, reset it to 0
-    if (current_led >= NUM_LEDS) {
-        current_led = 0;
-    }
-}
+//    // If the counter has reached the end of the array, reset it to 0
+//    if (current_led >= NUM_LEDS) {
+//        current_led = 0;
+//    }
+//}
 /* USER CODE END 0 */
 
 /**
@@ -125,6 +142,10 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
   // HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
+	
+	//for (uint32_t i; i < ALL; i++)
+	HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET);  
+	timeout = 250;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -134,18 +155,41 @@ int main(void)
     /* USER CODE END WHILE */
 		
 
+		HAL_Delay(timeout);
 		
-		if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {      // If the button is pressed
-				HAL_Delay(50);  
-				if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {  // If the button is still pressed
-					
-						Next_LED();   // Switch to the next LED 
-						
-						while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) { // Wait for the button to be released to avoid multiple triggering
-								
-						}
-				}
+		HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_RESET); 
+    if(direction == FORWARD)
+		{			
+		led_switcher ++;
+		if (led_switcher == ALL)
+		{
+			led_switcher = GREEN;
 		}
+	}
+		else
+		{
+					
+		if (led_switcher == GREEN)
+		{
+			led_switcher = ALL;
+		}
+		led_switcher --;
+		}
+		HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET); 
+		
+		
+		
+//		if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {      // If the button is pressed
+//				HAL_Delay(50);  
+//				if (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) {  // If the button is still pressed
+//					
+//						Next_LED();   // Switch to the next LED 
+//						
+//						while (HAL_GPIO_ReadPin(BUTTON_GPIO_Port, BUTTON_Pin) == GPIO_PIN_SET) { // Wait for the button to be released to avoid multiple triggering
+//								
+//						}
+//				}
+//		}
 		
 		
     /* USER CODE BEGIN 3 */
@@ -203,6 +247,20 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+if(direction == FORWARD)
+{
+	direction = REVERSE;
+}
+		else
+		{
+			direction = FORWARD;
+		}
+}
+
+
+
 
 /* USER CODE END 4 */
 
