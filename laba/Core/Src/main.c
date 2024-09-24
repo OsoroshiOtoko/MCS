@@ -21,7 +21,6 @@
 #include "gpio.h"
 #include <stdbool.h>
 #include "LEDs.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -59,7 +58,7 @@ static bool flag_set_button = false;
 static leds_color_e_t led_switcher = GREEN;
 static direction_e_t direction = FORWARD;
 static uint32_t timeout = 0;
-static uint16_t leds[ALL] = {LED_Green_Pin, LED_Orange_Pin, LED_Red_Pin, LED_Blue_Pin};
+static uint16_t leds[ALL] = {GREEN, ORANGE, RED, BLUE};
 
 
 // Initialization of the array with LEDs
@@ -182,7 +181,7 @@ int main(void)
 		led_switcher --;
 		}
 		//HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET); 
-		leds_set(led_switcher, ON);
+		leds_set(leds[led_switcher], ON);
 	}
 }
 		else
