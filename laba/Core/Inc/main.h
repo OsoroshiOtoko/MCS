@@ -36,22 +36,23 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-typedef enum
-{
-  GREEN = 0,
-  ORANGE,
-	RED,
-	BLUE,
-	ALL
-}leds_color_e_t;
+//typedef enum
+//{
+//  GREEN = 0,
+//  ORANGE,
+//	RED,
+//	BLUE,
+//	ALL
+//}leds_color_e_t;
 
-typedef struct 
-{
-	leds_color_e_t color; 
-	uint32_t port;
-	uint32_t pin;
-	
-}leds_param_S_t;
+//typedef struct 
+//{
+//	leds_color_e_t color; 
+//	uint32_t port;
+//	uint32_t pin;
+//	
+//}leds_param_S_t;
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

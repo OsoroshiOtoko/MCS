@@ -20,6 +20,8 @@
 #include "main.h"
 #include "gpio.h"
 #include <stdbool.h>
+#include "LEDs.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -53,9 +55,7 @@ typedef enum
 /* USER CODE BEGIN PV */
 
 static GPIO_PinState pin_state = GPIO_PIN_RESET;
-
 static bool flag_set_button = false;
-
 static leds_color_e_t led_switcher = GREEN;
 static direction_e_t direction = FORWARD;
 static uint32_t timeout = 0;
@@ -118,7 +118,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-   GPIO_PinState pin_state = GPIO_PIN_RESET;
+   //GPIO_PinState pin_state = GPIO_PIN_RESET;
 
   /* USER CODE END 1 */
 
@@ -144,7 +144,8 @@ int main(void)
   // HAL_GPIO_WritePin(LED_Red_GPIO_Port, LED_Red_Pin, GPIO_PIN_SET);
 	
 	//for (uint32_t i; i < ALL; i++)
-	HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET);  
+	//HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET);
+  leds_set(leds[led_switcher], ON);  
 	timeout = 250;
   /* USER CODE END 2 */
 
@@ -161,7 +162,8 @@ int main(void)
 			if(flag_set_button == false)
 			{
 			flag_set_button = true;
-		HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_RESET); 
+		//HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_RESET);
+    leds_set(leds[led_switcher], OFF);				
     if(direction == FORWARD)
 		{			
 		led_switcher ++;
@@ -179,7 +181,8 @@ int main(void)
 		}
 		led_switcher --;
 		}
-		HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET); 
+		//HAL_GPIO_WritePin(LED_GPIO_Port, leds[led_switcher], GPIO_PIN_SET); 
+		leds_set(led_switcher, ON);
 	}
 }
 		else

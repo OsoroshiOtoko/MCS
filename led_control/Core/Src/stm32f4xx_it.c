@@ -209,7 +209,7 @@ void EXTI0_IRQHandler(void)
 
   /* USER CODE END EXTI0_IRQn 0 */
 	
-	HAL_GPIO_EXTI_IRQHandler(
+	
   HAL_GPIO_EXTI_IRQHandler(INTERRUPT_Pin);
 	
   /* USER CODE BEGIN EXTI0_IRQn 1 */
