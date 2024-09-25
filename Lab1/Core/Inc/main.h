@@ -59,6 +59,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Button_Pin GPIO_PIN_0
 #define Button_GPIO_Port GPIOA
+#define Button_EXTI_IRQn EXTI0_IRQn
 #define LED_Green_Pin GPIO_PIN_12
 #define LED_Green_GPIO_Port GPIOD
 #define LED_Orange_Pin GPIO_PIN_13
@@ -69,7 +70,7 @@ void Error_Handler(void);
 #define LED_Blue_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
-
+#define LED_OnBoard_GPIO_Port GPIOD
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

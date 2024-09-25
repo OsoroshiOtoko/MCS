@@ -32,6 +32,11 @@ typedef enum
 	FORWARD = 0,
 	REVERSE = 1
 }direction_e_t;
+
+/*typedef enum
+{
+	FLAG_TIM6_IT_UPDATE = 0
+}flag_e_t; */
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -42,12 +47,16 @@ typedef enum
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
+//#define FLAG_SET(flag) flags |= (1 << flag)
+//#define FLAG_RESET(flag) flags &= (~(1 << flag))
+//#define FLAG_CHECK(flag) (flags == (1 << flag))
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-static bool flag_set_button = false;
+//uint32_t flags = 0;
 
 static uint32_t timeout = 300;
 static direction_e_t diraction = FORWARD;
@@ -58,7 +67,6 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void LED_Blink(leds_color_e_t color, uint32_t timeout);
 void LED_Circle_Blink(direction_e_t direction, uint32_t timeout);
-//void LED_Diraction_Switch();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,6 +104,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  /*htim6.Init.Period = 500;
+  HAL_TIM_Base_Init(&htim6);
+  HAL_TIM_Base_Start_IT(&htim6);*/
 
   /* USER CODE END 2 */
 
@@ -103,8 +114,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	LED_Circle_Blink(direction, timeout);
     /* USER CODE END WHILE */
-	  LED_Circle_Blink(direction, timeout);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -179,6 +191,24 @@ void LED_Circle_Blink(direction_e_t direction, uint32_t timeout)
 	    	break;
 	}
 }
+
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (GPIO_Pin == Button_Pin)
+	{
+		diraction = !diraction;
+	}
+}
+
+/*void HAL_TIM_PriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim == &htim6)
+	{
+
+	}
+}*/
+
 /* USER CODE END 4 */
 
 /**
