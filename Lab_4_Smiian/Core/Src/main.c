@@ -154,7 +154,7 @@ void Leds_PWM_Step ()
             {
                 if (leds_config[color].led_ptr == 0)
                 {
-                    leds_config[color].led_ptr = (LEDS_WAVE_LENGTH - 1);
+                    leds_config[color].led_dir = FORWARD;
                 }
                 else
                 {
