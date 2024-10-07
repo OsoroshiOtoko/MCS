@@ -1,4 +1,3 @@
 # MCS
-____
-##STM32_Cube_IDE
+## STM32_Cube_IDE
 Microcontroler system
