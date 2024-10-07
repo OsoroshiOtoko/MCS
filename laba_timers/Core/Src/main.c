@@ -88,10 +88,7 @@ LED_PowerState_s_t LED_PowerState[4] = {
 /* USER CODE BEGIN PV */
   uint32_t flags = 0;
 	uint16_t variable_timeout = 0;
-//	uint16_t led_power_blue = 0;
-	//uint16_t led_power_red = 0;
-//bool led_up_power_blue = true;
-//	bool led_up_power_red = true;
+
 
 	
 	uint16_t led_mass_power[LED_MASSIVE_POWER_MAX] = {0};	
@@ -131,6 +128,12 @@ void UpdateLEDs(void) {
 
 
 
+}
+void ApplyPWM(void) {
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, LED_PowerState[0].power);  
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, LED_PowerState[1].power);  
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, LED_PowerState[2].power);  
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, LED_PowerState[3].power);  
 }
 	
 	
@@ -228,9 +231,11 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    HAL_Delay(200);
+
     //UpdateLEDs(&led_state); 
-    UpdateLEDs(); 
+    UpdateLEDs();
+    ApplyPWM(); 
+    HAL_Delay(200);    
     
       
         
