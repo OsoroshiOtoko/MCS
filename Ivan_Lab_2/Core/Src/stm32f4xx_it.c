@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
-
+#include "gpio.h"
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -57,7 +57,7 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
-
+extern leds_name_e_t led_switcher;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -199,17 +199,17 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles EXTI line2 interrupt.
+  * @brief This function handles EXTI line0 interrupt.
   */
-void EXTI2_IRQHandler(void)
+void EXTI0_IRQHandler(void)
 {
-  /* USER CODE BEGIN EXTI2_IRQn 0 */
-
-  /* USER CODE END EXTI2_IRQn 0 */
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+//    HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
+  /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(KEY_INTERRUPT_Pin);
-  /* USER CODE BEGIN EXTI2_IRQn 1 */
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
 
-  /* USER CODE END EXTI2_IRQn 1 */
+  /* USER CODE END EXTI0_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

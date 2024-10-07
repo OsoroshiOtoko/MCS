@@ -37,6 +37,23 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
+typedef enum
+{
+  GREEN = 0,
+  ORANGE,
+	RED,
+	BLUE,
+	LED_MAX
+}leds_name_e_t;
+
+//typedef struct 
+//{
+//	leds_color_e_t color; 
+//	uint32_t port;
+//	uint32_t pin;
+//	
+//}leds_param_S_t;
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -57,13 +74,15 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define KEY_INTERRUPT_Pin GPIO_PIN_0
+#define KEY_INTERRUPT_GPIO_Port GPIOC
+#define KEY_INTERRUPT_EXTI_IRQn EXTI0_IRQn
+#define DENUG_KEY_Pin GPIO_PIN_1
+#define DENUG_KEY_GPIO_Port GPIOC
 #define BUTTON_Pin GPIO_PIN_0
 #define BUTTON_GPIO_Port GPIOA
 #define MY_HAND_Pin GPIO_PIN_1
 #define MY_HAND_GPIO_Port GPIOA
-#define KEY_INTERRUPT_Pin GPIO_PIN_2
-#define KEY_INTERRUPT_GPIO_Port GPIOA
-#define KEY_INTERRUPT_EXTI_IRQn EXTI2_IRQn
 #define LED_GREEN_Pin GPIO_PIN_12
 #define LED_GREEN_GPIO_Port GPIOD
 #define LED_ORANGE_Pin GPIO_PIN_13

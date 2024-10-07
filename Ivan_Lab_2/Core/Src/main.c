@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdbool.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,6 +43,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+GPIO_PinState pin_state = GPIO_PIN_RESET;
+bool flag_set_button = false;
+leds_name_e_t led_switcher = GREEN;
 
 /* USER CODE END PV */
 
@@ -65,7 +68,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-    GPIO_PinState pin_state = GPIO_PIN_RESET;
+    
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -94,18 +97,28 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    
     pin_state = HAL_GPIO_ReadPin (BUTTON_GPIO_Port, BUTTON_Pin);
 		if (pin_state == GPIO_PIN_SET)
 		{
-			HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin,GPIO_PIN_SET);
+			if (flag_set_button == false)
+			{
+		    flag_set_button = true;
+				led_switcher ++;
+			   	if (led_switcher == LED_MAX)
+          {
+						led_switcher = GREEN;
+					}
+// switch (led_switcher) 
+				  HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+//
+			}
 		}
-		else
+	  else
 		{
-			HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin,GPIO_PIN_RESET);
+			flag_set_button = false;
 		}
-	  /* USER CODE END WHILE */
-		
+    /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -158,7 +171,16 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+led_switcher --;
+			   	if (led_switcher == LED_MAX)
+          {
+						led_switcher = GREEN;
+					}
+// switch (led_switcher) 
+				  HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+}
 /* USER CODE END 4 */
 
 /**
