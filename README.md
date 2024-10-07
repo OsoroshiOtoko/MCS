@@ -1,3 +1,4 @@
-# MCS
+MCS (Microcontroler system)
+===========
 ## STM32_Cube_IDE
-Microcontroler system
+
