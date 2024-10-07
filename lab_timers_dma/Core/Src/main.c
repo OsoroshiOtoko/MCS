@@ -24,12 +24,27 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef enum
+	{
+		
+	FLAG_TIMEOUT = 0,
+  }flag_e_t;
+	
+	typedef struct {
+    uint16_t power_blue;
+    uint16_t power_red;
+		uint16_t power_orange;
+		uint16_t power_green;
+    bool up_power_blue;
+    bool up_power_red;
+		bool up_power_orange;
+		bool up_power_green;
+} LED_PowerState;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -51,7 +66,33 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+void UpdateLEDState(uint16_t *power, bool *up_power) {
+    if (*up_power) {
+        (*power)++;
+        if (*power >= 100) {
+            *up_power = false;
+        }
+    } else {
+        (*power)--;
+        if (*power == 0) {
+            *up_power = true;
+        }
+    }
+}
+	
+	
+	void UpdateLEDs(LED_PowerState *led_state) {
+    UpdateLEDState(&led_state->power_blue, &led_state->up_power_blue);
+    UpdateLEDState(&led_state->power_red, &led_state->up_power_red);
+		UpdateLEDState(&led_state->power_orange, &led_state->up_power_orange);
+    UpdateLEDState(&led_state->power_green, &led_state->up_power_green);
 
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, led_state->power_blue);
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, led_state->power_red);
+	  __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, led_state->power_orange);
+    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, led_state->power_green);
+
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,7 +132,22 @@ int main(void)
   MX_DMA_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+		LED_PowerState led_state = {0, 0, 0, 0, true, true, true, true};
 
+
+		
+	led_state.power_red = 0;
+	led_state.power_blue = 25;
+	led_state.power_orange = 50;
+	led_state.power_green = 75;
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, led_state.power_blue);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, led_state.power_red);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, led_state.power_orange);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, led_state.power_green);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -101,6 +157,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	HAL_Delay(200);
+	UpdateLEDs(&led_state); 
+		
+		
   }
   /* USER CODE END 3 */
 }
