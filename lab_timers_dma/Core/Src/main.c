@@ -30,14 +30,17 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-
+  typedef struct {
+    uint16_t power;  
+    bool up_power;   
+} LED_PowerState_s_t;
 
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define PWM_DATA_SIZE 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,10 +51,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint16_t pwmDataBlue[100];  
-uint16_t pwmDataRed[100];   
-uint16_t pwmDataOrange[100];
-uint16_t pwmDataGreen[100]; 
+uint16_t pwmDataBlue[PWM_DATA_SIZE];
+uint16_t pwmDataRed[PWM_DATA_SIZE];
+uint16_t pwmDataOrange[PWM_DATA_SIZE];
+uint16_t pwmDataGreen[PWM_DATA_SIZE];
+
 
 /* USER CODE END PV */
 
@@ -59,24 +63,40 @@ uint16_t pwmDataGreen[100];
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
- void InitPWMData(void) {
+void InitPWMData(void) {
     for (int i = 0; i < 100; i++) {
-        pwmDataBlue[i] = i;   
-        pwmDataRed[i] = i;   
-        pwmDataOrange[i] = i; 
-        pwmDataGreen[i] = i;  
+        pwmDataBlue[i] = i;      
+        pwmDataRed[i] = i;
+        pwmDataOrange[i] = i;
+        pwmDataGreen[i] = i;
+    }
+    for (int i = 100; i < 200; i++) {
+        pwmDataBlue[i] = 200 - i;  
+        pwmDataRed[i] = 200 - i;
+        pwmDataOrange[i] = 200 - i;
+        pwmDataGreen[i] = 200 - i;
     }
 }
-   void StartDMATransfer(void) {
-    
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_4, (uint32_t*)pwmDataBlue, 100);
 
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t*)pwmDataRed, 100);
 
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_2, (uint32_t*)pwmDataOrange, 100);
-
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_1, (uint32_t*)pwmDataGreen, 100);
+void StartPWMWithDMA(void) {
+   
+    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_4, (uint32_t*)pwmDataBlue, PWM_DATA_SIZE);
+    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t*)pwmDataRed, PWM_DATA_SIZE);
+    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_2, (uint32_t*)pwmDataOrange, PWM_DATA_SIZE);
+    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_1, (uint32_t*)pwmDataGreen, PWM_DATA_SIZE);
 }
+
+//   void StartDMATransfer(void) {
+//    
+//    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_4, (uint32_t*)pwmDataBlue, 100);
+
+//    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t*)pwmDataRed, 100);
+
+//    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_2, (uint32_t*)pwmDataOrange, 100);
+
+//    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_1, (uint32_t*)pwmDataGreen, 100);
+//}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -117,9 +137,9 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
-    InitPWMData();  //  PWM
-    StartDMATransfer(); //  DMA
-
+  
+  InitPWMData();
+  StartPWMWithDMA();
 
   /* USER CODE END 2 */
 
@@ -130,8 +150,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-
+ 
 
   }
   /* USER CODE END 3 */

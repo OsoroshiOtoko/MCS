@@ -50,23 +50,13 @@ typedef enum
 } LED_Color;
 
 LED_PowerState_s_t LED_PowerState[4] = {
-    {100, true},    //blue
-    {50, false},    //red
-    {75, true},     //orange
-    {25, false}     //green
+    {1, false},    //blue
+    {25, false},    //red
+    {50, false},     //orange
+    {100, false}     //green
 };
 
-//	typedef struct {
-//    uint16_t power_blue;
-//    uint16_t power_red;
-//	uint16_t power_orange;
-//	uint16_t power_green;
-//    bool up_power_blue;
-//    bool up_power_red;
-//	bool up_power_orange;
-//	bool up_power_green;
-//}LED_PowerState_s_t;
-	
+
 
 
 /* USER CODE END PTD */
@@ -89,8 +79,6 @@ LED_PowerState_s_t LED_PowerState[4] = {
   uint32_t flags = 0;
 	uint16_t variable_timeout = 0;
 
-
-	
 	uint16_t led_mass_power[LED_MASSIVE_POWER_MAX] = {0};	
 /* USER CODE END PV */
 
@@ -99,17 +87,6 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 	
 void UpdateLEDs(void) {
-//    if (*up_power) {
-//        (*power)++;
-//        if (*power >= 100) {
-//            *up_power = false;
-//        }
-//    } else {
-//        (*power)--;
-//        if (*power == 0) {
-//            *up_power = true;
-//        }
-//    }
 
        for (int i = 0; i < 4; i++) {
         if (LED_PowerState[i].up_power) {
@@ -135,20 +112,6 @@ void ApplyPWM(void) {
     __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, LED_PowerState[2].power);  
     __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, LED_PowerState[3].power);  
 }
-	
-	
-//	void UpdateLEDs(LED_PowerState_s_t *led_state) {
-//    UpdateLEDState(&led_state->power_blue, &led_state->up_power_blue);
-//    UpdateLEDState(&led_state->power_red, &led_state->up_power_red);
-//    UpdateLEDState(&led_state->power_orange, &led_state->up_power_orange);
-//    UpdateLEDState(&led_state->power_green, &led_state->up_power_green);
-
-//    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, led_state->power_blue);
-//    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, led_state->power_red);
-//    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, led_state->power_orange);
-//    __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, led_state->power_green);
-
-//}
 
 
 
@@ -198,21 +161,6 @@ int main(void)
 
 	variable_timeout = 100;
 
-		
-//		LED_PowerState_s_t led_state = {0, 0, 0, 0, true, true, true, true};
-
-
-//led_state.power_blue = 100;
-//led_state.up_power_red = false;
-		
-// led_state.power_red = 0;
-// led_state.up_power_red = true;
-// led_state.power_blue = 25;
-// led_state.up_power_blue = true;
-// led_state.power_orange = 50;
-// led_state.up_power_orange = false;
-//	led_state.power_green = 75;
-// led_state.up_power_green = false;
 	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, LED_PowerState[0].power);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, LED_PowerState[1].power);
@@ -231,14 +179,10 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-
-    //UpdateLEDs(&led_state); 
     UpdateLEDs();
     ApplyPWM(); 
-    HAL_Delay(200);    
+    HAL_Delay(20);    
     
-      
-        
   
   }
   /* USER CODE END 3 */
