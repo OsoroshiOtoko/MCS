@@ -19,6 +19,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -36,6 +38,9 @@
 #define VREFINT 1.21
 #define V25 0.76
 #define Avg_slope 2.5
+#define NUMBER_SAMPLE 9
+#define NUMBER_CHANNEL 3
+#define ADC_BUFFER_SIZE (NUMBER_SAMPLE * NUMBER_CHANNEL)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,6 +56,8 @@
  float Vdd = 0;
  float Vsens = 0;
  float Temp = 0;
+ uint16_t adc_buffer[ADC_BUFFER_SIZE] = {0};
+ void temperature(void);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,9 +100,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
-
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_buffer, ADC_BUFFER_SIZE);
+    HAL_TIM_Base_Start(&htim8);
+    //HAL_DMA_RegisterCallback(&hdma_adc1, HAL_DMA_XFER_CPLT_CB_ID, adc_buffer_full);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -106,17 +117,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_ADCEx_InjectedStart(&hadc1);
-    HAL_ADCEx_InjectedPollForConversion(&hadc1,1);
-    HAL_ADCEx_InjectedStop(&hadc1);
-    adc_value[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);   //Vrefint
-    adc_value[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);   //Vtemp
-    adc_value[2] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3);   //Vch
-    Vdd = (VREFINT * 0xFFF) /adc_value[0];
-    Vsens = (Vdd * adc_value[1] / 0xFFF);
-    Temp = (Vsens - V25) / (Avg_slope/1000)+25;
-    HAL_Delay(100);
-    
+//    HAL_ADCEx_InjectedStart(&hadc1);
+//    HAL_ADCEx_InjectedPollForConversion(&hadc1,1);
+//    HAL_ADCEx_InjectedStop(&hadc1);
+//    adc_value[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);   //Vrefint
+//    adc_value[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);   //Vtemp
+//    adc_value[2] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3);   //Vch
+//    Vdd = (VREFINT * 0xFFF) /adc_value[0];
+//    Vsens = (Vdd * adc_value[1] / 0xFFF);
+//    Temp = (Vsens - V25) / (Avg_slope/1000)+25;
+//    HAL_Delay(100);
+        temperature();
+        HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
@@ -161,9 +173,25 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-
+      
 /* USER CODE BEGIN 4 */
-
+//void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+void temperature(void) 
+{
+uint32_t adc_params[NUMBER_CHANNEL] = {0};
+  for (uint8_t i = 0; i < NUMBER_SAMPLE; i++)
+  {
+  adc_params[0] += adc_buffer[i * 3 + 0];
+  adc_params[1] += adc_buffer[i * 3 + 1];
+  adc_params[2] += adc_buffer[i * 3 + 2];
+  }
+  adc_params[0] += adc_buffer[0] / NUMBER_SAMPLE;
+  adc_params[1] += adc_buffer[1] / NUMBER_SAMPLE;
+  adc_params[2] += adc_buffer[2] / NUMBER_SAMPLE;
+  Vdd = (VREFINT * 0xFFF) /adc_params[0];
+  Vsens = (Vdd * adc_params[1] / 0xFFF);
+  Temp = (Vsens - V25) / (Avg_slope/1000)+25;
+}
 /* USER CODE END 4 */
 
 /**
