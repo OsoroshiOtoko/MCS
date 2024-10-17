@@ -18,25 +18,24 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "dma.h"
-#include "tim.h"
+#include "adc.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdbool.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define PWM_DATA_SIZE 100
+#define VREFINT 1.21
+#define V25 0.76
+#define Avg_slope 2.5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,42 +46,16 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint16_t pwmDataBlue[PWM_DATA_SIZE];
-uint16_t pwmDataRed[PWM_DATA_SIZE];
-uint16_t pwmDataOrange[PWM_DATA_SIZE];
-uint16_t pwmDataGreen[PWM_DATA_SIZE];
-
-
+ uint32_t adc_value[3] = {0};
+ float voltage = 0;
+ float Vdd = 0;
+ float Vsens = 0;
+ float Temp = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
-void PWMData(void) {
-    for (int i = 0; i < PWM_DATA_SIZE; i++) {
-        pwmDataBlue[i] = i;      
-        pwmDataRed[i] = i;
-        pwmDataOrange[i] = i;
-        pwmDataGreen[i] = i;
-    }
-    for (int i = PWM_DATA_SIZE; i < 200; i++) {
-        pwmDataBlue[i] = 200 - i;  
-        pwmDataRed[i] = 200 - i;
-        pwmDataOrange[i] = 200 - i;
-        pwmDataGreen[i] = 200 - i;
-    }
-}
-
-
-void StartDMA(void) {
-   
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_4, (uint32_t*)pwmDataBlue, PWM_DATA_SIZE);
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_3, (uint32_t*)pwmDataRed, PWM_DATA_SIZE);
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_2, (uint32_t*)pwmDataOrange, PWM_DATA_SIZE);
-    HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_1, (uint32_t*)pwmDataGreen, PWM_DATA_SIZE);
-}
-
 
 /* USER CODE END PFP */
 
@@ -120,25 +93,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_TIM4_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-
-  
-  PWMData();
-  StartDMA();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
- 
-
+    HAL_ADCEx_InjectedStart(&hadc1);
+    HAL_ADCEx_InjectedPollForConversion(&hadc1,1);
+    HAL_ADCEx_InjectedStop(&hadc1);
+    adc_value[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);   //Vrefint
+    adc_value[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);   //Vtemp
+    adc_value[2] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3);   //Vch
+    Vdd = (VREFINT * 0xFFF) /adc_value[0];
+    Vsens = (Vdd * adc_value[1] / 0xFFF);
+    Temp = (Vsens - V25) / (Avg_slope/1000)+25;
+    HAL_Delay(100);
+    
   }
   /* USER CODE END 3 */
 }
