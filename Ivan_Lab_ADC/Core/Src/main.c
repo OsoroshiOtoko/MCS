@@ -28,7 +28,9 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+#define VREFINT 1.21
+#define V25 0.76
+#define AVG_SLOPE 2.5
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -45,6 +47,10 @@
 
 /* USER CODE BEGIN PV */
 uint32_t adc_result[3]= {0};
+float    Vdd = 0;
+float    Temperature = 0;
+float    Vsens = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,19 +100,28 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	HAL_ADCEx_InjectedStart(&hadc1);
-	HAL_ADCEx_InjectedPollForConversion(&hadc1, 1);
-	HAL_ADCEx_InjectedStop(&hadc1);
-	adc_result[0] = HAL_ADCEx_InjectedGetValue (&hadc1,ADC_INJECTED_RANK_1);  //Vrefint
-	adc_result[1] = HAL_ADCEx_InjectedGetValue (&hadc1,ADC_INJECTED_RANK_2);  //Vtemperature
-	adc_result[2] = HAL_ADCEx_InjectedGetValue (&hadc1,ADC_INJECTED_RANK_3);  //Vcannal4
-  while (1)
+
+while (1)
   {
 		
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+//    HAL_ADCEx_InjectedStart(&hadc1);
+//	  HAL_ADCEx_InjectedPollForConversion(&hadc1, 1);
+//	  HAL_ADCEx_InjectedStop(&hadc1);
+//	  adc_result[0] = HAL_ADCEx_InjectedGetValue (&hadc1,ADC_INJECTED_RANK_1);  //Vrefint
+//	  adc_result[1] = HAL_ADCEx_InjectedGetValue (&hadc1,ADC_INJECTED_RANK_2);  //Vtemperature
+//	  adc_result[2] = HAL_ADCEx_InjectedGetValue (&hadc1,ADC_INJECTED_RANK_3);  //Vcannal4
+//  //  Temperature = (Vsens - V25)/Avg_slope + 25 V25=0,76, Avg_slope = 2,5 [mv/C]
+//  
+//    Vdd = VREFINT * 0x0FFF / adc_result[0]; 
+//	  Vsens = (Vdd * adc_result[1] / 0x0FFF);
+//	  Temperature = (Vsens - V25) / (AVG_SLOPE * 1000) + 25;
+//	
+//	  HAL_Delay(100);
+		
+	}
   /* USER CODE END 3 */
 }
 
