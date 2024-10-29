@@ -38,6 +38,7 @@
 #define SAMPLES 200       
 #define DAC_BUFFER_SIZE SAMPLES
 #define PI 3.14
+#define DAC_MAX_VALUE 4095
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,7 +62,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
  void SineWaveBuffer(void) {
     for (int i = 0; i < DAC_BUFFER_SIZE; i++) {
-        dacBuffer[i] = (uint32_t)((sin(2 * PI * i / SAMPLES) + 1) * 2047); 
+        dacBuffer[i] = (uint32_t)((sin(2 * PI * i / SAMPLES) + 1) * ( DAC_MAX_VALUE / 2 ));
     }
 }
 /* USER CODE END 0 */
