@@ -65,7 +65,7 @@ leds_config_s_t leds_config[LEDS_ALL] = {0};
 #define LEDS_PWM_TIM htim4
 #define MAX_VALUE 255
 #define MIN_VALUE 5
-#define LEDS_WAVE_LENGTH 256
+#define LEDS_WAVE_LENGTH 255
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -218,7 +218,7 @@ int main(void)
 
       if (__FLAG_CHECK(LEDS_PWM_CALLB))
       {
-          Leds_PWM_Step();
+          //Leds_PWM_Step();
           __FLAG_RESET(LEDS_PWM_CALLB);
       }
     /* USER CODE END WHILE */

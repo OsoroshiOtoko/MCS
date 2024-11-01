@@ -43,7 +43,7 @@ void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 122-1;
+  htim4.Init.Prescaler = 123-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 255-1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -116,8 +116,8 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     hdma_tim4_ch1.Init.Direction = DMA_MEMORY_TO_PERIPH;
     hdma_tim4_ch1.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_tim4_ch1.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_tim4_ch1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-    hdma_tim4_ch1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+    hdma_tim4_ch1.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_tim4_ch1.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
     hdma_tim4_ch1.Init.Mode = DMA_CIRCULAR;
     hdma_tim4_ch1.Init.Priority = DMA_PRIORITY_LOW;
     hdma_tim4_ch1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
