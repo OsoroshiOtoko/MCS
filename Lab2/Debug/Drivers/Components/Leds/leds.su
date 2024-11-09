@@ -1,0 +1,3 @@
+../Drivers/Components/Leds/leds.c:8:6:leds_PWM_init	8	static
+../Drivers/Components/Leds/leds.c:15:6:leds_PWM_DMA_init	16	static
+../Drivers/Components/Leds/leds.c:47:6:leds_PWM_set	16	static

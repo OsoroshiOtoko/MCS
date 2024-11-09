@@ -114,7 +114,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	LED_Circle_Blink(direction, timeout);
+	LED_Circle_Blink(diraction, timeout);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
